@@ -6,7 +6,8 @@ import Login from '../views/Login.vue'
 import Mainbox from '../views/Mainbox.vue'
 import NotFound from '../views/notfound/NotFound.vue'
 import routesConfig from './config'
-import { useRouterStore } from '../src/store/useRouterStore'
+import useRouterStore from '../store/useRouterStore'
+import useUserStore from '../store/useUserStore'
 
 const routes = [
     {
@@ -31,17 +32,19 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
 
     const {isGetterRouter} = useRouterStore()
+    const {user} = useUserStore()
 
     if (to.name === 'login') {
         next()
     } else {
-        if (!localStorage.getItem('token')) {
+        if (!user.role) {
             next({
                 path: '/login'
             })
         } else {
             //动态配置路由
             if(!isGetterRouter) {
+                router.removeRoute('mainbox')
                 configRoute()
                 next({
                     path: to.fullPath
@@ -56,9 +59,13 @@ router.beforeEach((to, from, next) => {
 
 const configRoute = () => {
     const {changeRouter} = useRouterStore()
+    router.addRoute({
+        path: '/mainbox',
+        name:'mainbox',
+        component: Mainbox
+    })
     routesConfig.forEach(item => {
-        // console.log('item :>> ', item);
-        router.addRoute('mainbox', item)
+        checkPermission(item) && router.addRoute('mainbox', item)
     });
 
     //加重定向
@@ -75,6 +82,14 @@ const configRoute = () => {
     })
 
     changeRouter(true)
+}
+
+const checkPermission = ({path}) => {
+    const { user } = useUserStore()
+    let currentUserRights = user.role.rights
+    // console.log('currentUserRights.includes ', currentUserRights.includes(path);
+    console.log('currentUserRights.includes', currentUserRights.includes(path))
+    return currentUserRights.includes(path)
 }
 
 export default router

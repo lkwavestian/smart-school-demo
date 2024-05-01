@@ -1,9 +1,6 @@
-/*
- * @作者: kerwin
- */
 import {defineStore} from 'pinia'
 import {ref} from 'vue'
-export const useUserStore = defineStore("user",()=>{
+  const useUserStore = defineStore("user",()=>{
     const user = ref({})
     function changeUser(value){
         user.value = value
@@ -15,3 +12,4 @@ export const useUserStore = defineStore("user",()=>{
 },{
     persist:true
 })
+export default useUserStore

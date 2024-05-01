@@ -3,7 +3,7 @@
  */
 import {defineStore} from 'pinia'
 import {ref} from 'vue'
-export const useRouterStore = defineStore("router",()=>{
+ const useRouterStore = defineStore("router",()=>{
     const isGetterRouter = ref(false)
     function changeRouter(value){
         isGetterRouter.value = value
@@ -13,3 +13,4 @@ export const useRouterStore = defineStore("router",()=>{
         changeRouter
     }
 })
+export default useRouterStore
