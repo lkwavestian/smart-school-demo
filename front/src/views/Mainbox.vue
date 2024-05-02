@@ -3,6 +3,7 @@
         <el-container style="height: 100vh">
             <SideMenu />
             <el-container direction="vertical">
+                <button @click="handleExit">退出</button>
                 <TopHeader />
                 <el-main>
                     <el-scrollbar>

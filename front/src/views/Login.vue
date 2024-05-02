@@ -66,7 +66,7 @@ const submitForm = async (formEl) => {
     if (!formEl) return;
     await formEl.validate((valid, fields) => {
         if (valid) {
-            if (loginForm.name === 'admin') {
+            if (loginForm.username === 'admin') {
                 handleLogin1();
             } else {
                 handleLogin2();
@@ -146,7 +146,7 @@ const handleLogin2 = () => {
         font-size: 30px;
     }
 
-    .demo-ruleForm {
+    .demo-loginForm {
         margin-top: 50px;
     }
 
