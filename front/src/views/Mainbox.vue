@@ -1,9 +1,16 @@
 <template>
     <div>
-        <div>侧边栏</div>
-        <div>导航栏</div>
-        <button @click="handleExit()">退出登录</button>
-        <router-view></router-view>
+        <el-container style="height: 100vh">
+            <SideMenu />
+            <el-container direction="vertical">
+                <TopHeader />
+                <el-main>
+                    <el-scrollbar>
+                        <router-view></router-view>
+                    </el-scrollbar>
+                </el-main>
+            </el-container>
+        </el-container>
     </div>
 </template>
 
@@ -11,14 +18,16 @@
 import { useRouter } from 'vue-router';
 import useRouterStore from '../store/useRouterStore';
 import useUserStore from '../store/useUserStore';
+import SideMenu from '../components/mainbox/SideMenu.vue';
+import TopHeader from '../components/mainbox/TopHeader.vue';
 
-const router = useRouter()
-const {changeUser} = useUserStore()
-const {changeRouter} = useRouterStore()
+const router = useRouter();
+const { changeUser } = useUserStore();
+const { changeRouter } = useRouterStore();
 
-    const handleExit = () => {
-        changeUser({})
-        changeRouter(false)
-        router.push('/login')
-    }
+const handleExit = () => {
+    changeUser({});
+    changeRouter(false);
+    router.push('/login');
+};
 </script>
