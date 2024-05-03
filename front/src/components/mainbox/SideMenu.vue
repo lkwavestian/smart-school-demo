@@ -77,7 +77,7 @@ const mapIcon = {
 };
 
 onMounted(async () => {
-    var res = await axios.get('/rights.json');
+    var res = await axios.get('/adminapi/rights');
     rightsList.value = res.data;
 });
 

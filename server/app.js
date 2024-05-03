@@ -28,30 +28,30 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 //后端路由拦截
-app.use((req, res, next) => {
-  if (req.url === "/adminapi/users/login") {
+// app.use((req, res, next) => {
+//   if (req.url === "/adminapi/users/login") {
     
-    next()
-    return;
-  }
-  const token = req.headers["authorization"]?.split(" ")[1]
-  if (token) {
-    var payload = JWT.verify(token)
-    if (payload) {
-      const newToken = JWT.generate({
-        _id: payload._id,
-        username: payload.username
-      }, "1d")
+//     next()
+//     return;
+//   }
+//   const token = req.headers["authorization"]?.split(" ")[1]
+//   if (token) {
+//     var payload = JWT.verify(token)
+//     if (payload) {
+//       const newToken = JWT.generate({
+//         _id: payload._id,
+//         username: payload.username
+//       }, "1d")
 
-      res.header("Authorization", newToken)
-      next()
-    } else {
-      res.status(401).send({ errorCode: -1, errorInfo: "token过期" })
-    }
-  }else{
-    res.status(401).send({ errorCode: -2, errorInfo: "未授权" })
-  }
-})
+//       res.header("Authorization", newToken)
+//       next()
+//     } else {
+//       res.status(401).send({ errorCode: -1, errorInfo: "token过期" })
+//     }
+//   }else{
+//     res.status(401).send({ errorCode: -2, errorInfo: "未授权" })
+//   }
+// })
 
 app.use(RightRouter)
 app.use(RoleRouter)
