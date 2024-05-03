@@ -39,6 +39,8 @@ import useUserStore from '../store/useUserStore';
 //导入loadFull
 import { loadFull } from 'tsparticles';
 import options from '../util/config';
+import axios from 'axios';
+import { ElMessage } from 'element-plus';
 
 const particlesInit = async (engine) => {
     await loadFull(engine);
@@ -62,69 +64,36 @@ const rules = reactive({
     password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
 });
 
+//登录校验方法
 const submitForm = async (formEl) => {
-    if (!formEl) return;
-    await formEl.validate((valid, fields) => {
+    await formEl.validate(async (valid, fields) => {
         if (valid) {
-            if (loginForm.username === 'admin') {
-                handleLogin1();
-            } else {
-                handleLogin2();
+            //Promise.all
+            //Promise.race
+            //Promise.any
+            try {
+                const res = await Promise.any([
+                    axios.post('/adminapi/users/login', loginForm),
+                    axios.post('/adminapi/students/login', {
+                        studentname: loginForm.username,
+                        password: loginForm.password,
+                    }),
+                ]);
+                // console.log(res.data)
+                let { ActionType, data } = res.data;
+                if (ActionType === 'OK') {
+                    changeUser(data);
+                    router.push('/index');
+                } else {
+                    ElMessage.error('用户名密码不匹配');
+                }
+            } catch (error) {
+                ElMessage.error('用户名密码不匹配');
             }
         } else {
             console.log('error submit!', fields);
         }
     });
-};
-
-const handleLogin1 = () => {
-    changeUser({
-        id: 1,
-        username: 'admin',
-        password: '123',
-        role: {
-            roleName: '管理员',
-            roleType: 1,
-            rights: [
-                '/index',
-                '/user-manage',
-                '/user-manage/list',
-                '/right-manage',
-                '/right-manage/rolelist',
-                '/right-manage/rightlist',
-                '/tag-manage',
-                '/tag-manage/list',
-                '/interview-manage',
-                '/interview-manage/companylist',
-                '/interview-manage/companydata',
-                '/student-manage',
-                '/student-manage/studentlist',
-                '/student-manage/gradelist',
-            ],
-        },
-    });
-    router.push('/');
-};
-const handleLogin2 = () => {
-    changeUser({
-        id: 2,
-        username: 'kerwin',
-        password: '123',
-        role: {
-            roleName: '讲师',
-            roleType: 2,
-            rights: [
-                '/index',
-                '/interview-manage',
-                '/interview-manage/companylist',
-                '/interview-manage/companydata',
-                '/student-manage',
-                '/student-manage/studentlist',
-                '/student-manage/gradelist',
-            ],
-        },
-    });
-    router.push('/');
 };
 </script>
 
